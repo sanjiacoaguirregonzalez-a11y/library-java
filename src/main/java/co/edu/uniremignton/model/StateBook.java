@@ -1,0 +1,13 @@
+package co.edu.uniremignton.model;
+
+/*⏺
+UTILIZAMOS Enum PARA DECLARAR CONSTANTES
+QUE REPRESENTAN LOS ESTADOS DE LOS LIBROS
+EN LA BIBLIOTECA.
+*/
+
+public enum StateBook {
+    AVAILABLE, //➡DISPONIBLE
+    BORROWED , //➡PRESTADO
+    RESERVED //➡RESERVADO
+}
