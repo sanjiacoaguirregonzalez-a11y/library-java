@@ -79,8 +79,7 @@ public class ConsoleUI {
         String category = scanner.nextLine().trim();
 
         Book book = new Book(isbn, title, author, category);
-
-        // CORRECCIÓN: Validamos si se pudo agregar o si era duplicado
+        
         if (library.addBook(book)) {
             System.out.println("✅ ¡Libro agregado exitosamente!");
         } else {
@@ -90,7 +89,6 @@ public class ConsoleUI {
 
     private void showAllBooks() {
         System.out.println("\n--- Historial de Todos los Préstamos Realizados ---");
-        // CORRECCIÓN: Mostramos el historial completo de préstamos usando getLoans()
         List<Book> Books = library.getBooks();
 
         if (Books.isEmpty()) {
@@ -127,7 +125,7 @@ public class ConsoleUI {
         System.out.print("Nombre de quien pide prestado: ");
         String borrowername = scanner.nextLine().trim();
 
-        // CORRECCIÓN: Nombre del método corregido a borrowBook (singular)
+
         if (library.borrowBook(isbn, borrowername)) {
             System.out.println("✅ Préstamo realizado exitosamente!");
             System.out.println("📅 El libro debe ser devuelto en 14 días.");
@@ -151,7 +149,6 @@ public class ConsoleUI {
 
     private void showActiveLoans() {
         System.out.println("\n--- Préstamos Activos ---");
-        // CORRECCIÓN: Cambiado de getLoans() a getActiveLoans()
         List<Loan> activeLoans = library.getActiveLoans();
 
         if (activeLoans.isEmpty()) {
@@ -165,17 +162,7 @@ public class ConsoleUI {
         System.out.println("Total activos: " + activeLoans.size());
     }
 
-    private void showExpiredLoans() {
-        System.out.println("\n--- Préstamos Vencidos ---");
-        // Mensaje provisional porque este método no está en tu clase Library todavía
-        System.out.println("Módulo de préstamos vencidos en desarrollo.");
-    }
 
-    private void removeBook() {
-        System.out.println("\n--- Eliminar un Libro ---");
-        // Mensaje provisional porque este método no está en tu clase Library todavía
-        System.out.println("Módulo de eliminación en desarrollo.");
-    }
 
     private int getIntInput() {
         try {
