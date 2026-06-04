@@ -2,6 +2,7 @@ package co.edu.uniremignton.ui;
 
 import co.edu.uniremignton.model.Book;
 import co.edu.uniremignton.model.Loan;
+import co.edu.uniremignton.model.StateBook;
 import co.edu.uniremignton.service.Library;
 import java.util.List;
 import java.util.Scanner;
@@ -40,6 +41,9 @@ public class ConsoleUI {
                 case 6:
                     showActiveLoans();
                     break;
+                 case 7:
+                     reserveBook();
+                     break;
                 case 0:
                     running = false;
                     System.out.println("¡Gracias por usar el sistema de biblioteca!");
@@ -59,6 +63,7 @@ public class ConsoleUI {
         System.out.println("4. 🔄 Prestar un libro");
         System.out.println("5. 🔙 Devolver un libro");
         System.out.println("6. 📋 Ver préstamos activos");
+        System.out.println("7. 📌 Reservar un libro");
         System.out.println("0. 🚪 Salir");
         System.out.print("Selecciona una opción: ");
     }
@@ -131,6 +136,25 @@ public class ConsoleUI {
             System.out.println("📅 El libro debe ser devuelto en 14 días.");
         } else {
             System.out.println("❌ No se pudo realizar el préstamo. El libro no existe o ya está prestado.");
+        }
+    }
+
+    private void reserveBook(){
+        System.out.println("\n--- Reservar un Libro ---");
+
+        System.out.print("Ingresa el ISBN del libro: ");
+        String isbn = scanner.nextLine().trim();
+
+        System.out.print("Nombre de quien reserva: ");
+        String borrowername = scanner.nextLine().trim();
+
+
+        if (library.reserveBook(isbn, borrowername)) {
+            System.out.println("✅ Reserva realizada exitosamente!");
+        } else if (StateBook.RESERVED.equals(library.findBookByIsbn(isbn).get().getState())) {
+            System.out.println("⚠️ El libro ya está reservado por otra persona.");
+        } else {
+            System.out.println("❌ No se pudo realizar la reserva. El libro no existe o ya está reservado.");
         }
     }
 

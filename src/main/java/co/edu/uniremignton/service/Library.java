@@ -61,7 +61,7 @@ public List<Book> getAvailableBooks() {
         return result;
     }
 
-
+// PRESTAR LIBRO SI EL LIBRO EXISTE Y ESTA DISPONIBLE, CAMBIAMOS SU ESTADO A PRESTADO Y CREAMOS UN NUEVO PRESTAMO
 public boolean borrowBook(String isbn, String borrowerName) {
         Optional<Book> optionalBook = findBookByIsbn(isbn);
         if (optionalBook.isEmpty()) {
@@ -76,6 +76,26 @@ book.setState(StateBook.BORROWED);
         loans.add(loan);
         return true;
     }
+
+// RESERVAR LIBRO
+public boolean reserveBook(String isbn, String borrowerName) {
+        Optional<Book> optionalBook = findBookByIsbn(isbn);
+        if (optionalBook.isEmpty()) {
+            return false;
+        }
+        Book book = optionalBook.get();
+        if (!book.isAvailable()) {
+            return false;
+        }
+        book.setState(StateBook.RESERVED);
+        Loan loan = new Loan(isbn, book, borrowerName);
+        loans.add(loan);
+        return true;
+    }
+
+
+
+
 
 public boolean returnBook(String isbnLoand) {
         for (Loan loan : loans) {
