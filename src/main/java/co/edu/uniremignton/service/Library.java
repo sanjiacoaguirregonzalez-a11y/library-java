@@ -7,131 +7,121 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Clase Library: Gestiona la lógica del sistema de biblioteca.
- * Permite agregar libros, realizar préstamos, devoluciones y consultarlos.
- */
+// CREAMOS LOS ARRAYS PARA LIBROS Y OTRO PARA PRESTAMOS
 public class Library {
     private List<Book> books;
     private List<Loan> loans;
 
-    /**
-     * Constructor: Inicializa las listas de libros y préstamos
-     */
+
+    // CONSTRUCTOR
     public Library() {
         this.books = new ArrayList<>();
         this.loans = new ArrayList<>();
     }
 
-    /**
-     * Agrega un nuevo libro a la biblioteca
-     */
-    public void addBook(Book book) {
-        if (book != null && !books.contains(book)) {
-            books.add(book);
+    //AgregarLibro
+    public boolean addBook(Book book) {
+        if (findBookByIsbn(book.getIsbn()).isPresent()) {
+            return false; // Evita duplicados
         }
+        books.add(book);
+        return true;
     }
 
-    /**
-     * Elimina un libro de la biblioteca
-     */
-    public void removeBook(String isbn) {
-        books.removeIf(book -> book.getIsbn().equals(isbn));
-    }
-
-    /**
-     * Obtiene un libro por ISBN
-     */
-    public Optional<Book> getBook(String isbn) {
+    // buscarPorIsbn
+    public Optional<Book> findBookByIsbn(String isbn) {
         return books.stream()
                 .filter(book -> book.getIsbn().equals(isbn))
                 .findFirst();
     }
 
-    /**
-     * Obtiene todos los libros disponibles
-     */
+    // buscarPorTitulo
+    public List<Book> findBooksByTitle(String title) {
+        List<Book> result = new ArrayList<>();
+        for (Book book : books) {
+            // .toLowerCase() asegura que si buscas "quijote" encuentre "El Quijote"
+            if (book.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                result.add(book);
+            }
+        }
+        return result;
+    }
+
+    //getCatalogo
+    public List<Book> findBooksByAuthor(String author) {
+        List<Book> result = new ArrayList<>();
+        for (Book book : books) {
+            // Es igual al de título, solo que aquí usamos .getAuthor()
+            if (book.getAuthor().toLowerCase().contains(author.toLowerCase())) {
+                result.add(book);
+            }
+        }
+        return result;
+    }
+
+    // getLibrosDisponibles
     public List<Book> getAvailableBooks() {
-        List<Book> available = new ArrayList<>();
+        List<Book> result = new ArrayList<>();
         for (Book book : books) {
             if (book.isAvailable()) {
-                available.add(book);
+                result.add(book);
             }
         }
-        return available;
+        return result;
     }
 
-    /**
-     * Obtiene todos los libros de la biblioteca
-     */
-    public List<Book> getAllBooks() {
-        return new ArrayList<>(books);
+
+    // prestarLibro(isbn, nombre)
+    public boolean borrowBook(String isbn, String borrowerName) {
+        Optional<Book> optionalBook = findBookByIsbn(isbn);
+        if (optionalBook.isEmpty()) {
+            return false;
+        }
+        Book book = optionalBook.get();
+        if (!book.isAvailable()) {
+            return false;
+        }
+        // CAMBIAMOS EL ESTADO DEL LIBRO A PRESTADO
+        book.setState(StateBook.BORROWED);
+        Loan loan = new Loan(isbn, book, borrowerName);
+        loans.add(loan);
+        return true;
     }
 
-    /**
-     * Realiza un préstamo de un libro
-     */
-    public boolean borrowBook(String isbn, String borrowername) {
-        Optional<Book> bookOpt = getBook(isbn);
-        if (bookOpt.isPresent() && bookOpt.get().isAvailable()) {
-            Book book = bookOpt.get();
-            book.setState(StateBook.BORROWED);
-
-            String loanId = "LOAN-" + System.currentTimeMillis();
-            Loan loan = new Loan(loanId, book, borrowername);
-            loans.add(loan);
-            return true;
+    // devolverLibro(idPrestamo)
+    public boolean returnBook(String isbnLoand) {
+        for (Loan loan : loans) {
+            // Ahora sí compara String con String. ¡El amarillo desaparece!
+            if (loan.getBook().getIsbn().equals(isbnLoand) && !loan.isReturned()) {
+                loan.registerReturn();
+                loan.getBook().setState(StateBook.AVAILABLE);
+                return true;
+            }
         }
         return false;
     }
 
-    /**
-     * Registra la devolución de un libro
-     */
-    public boolean returnBook(String isbn) {
-        Optional<Loan> loanOpt = loans.stream()
-                .filter(loan -> loan.getBook().getIsbn().equals(isbn) && !loan.isReturned())
-                .findFirst();
-
-        if (loanOpt.isPresent()) {
-            Loan loan = loanOpt.get();
-            loan.registerReturn();
-            loan.getBook().setState(StateBook.AVAILABLE);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Obtiene todos los préstamos activos
-     */
+    // getPrestamosActivos()
     public List<Loan> getActiveLoans() {
-        List<Loan> active = new ArrayList<>();
+        List<Loan> result = new ArrayList<>();
+
         for (Loan loan : loans) {
             if (!loan.isReturned()) {
-                active.add(loan);
+                result.add(loan);
             }
         }
-        return active;
+
+        return result;
     }
 
-    /**
-     * Obtiene todos los préstamos vencidos
-     */
-    public List<Loan> getExpiredLoans() {
-        List<Loan> expired = new ArrayList<>();
-        for (Loan loan : loans) {
-            if (loan.isExpired()) {
-                expired.add(loan);
-            }
-        }
-        return expired;
+// getTodosLosPrestamos
+
+    public List<Loan> getBook() {
+        return loans;
     }
 
-    /**
-     * Obtiene todos los préstamos registrados
-     */
-    public List<Loan> getAllLoans() {
-        return new ArrayList<>(loans);
+
+    public List<Book> getBooks() {
+        return books;
     }
 }
