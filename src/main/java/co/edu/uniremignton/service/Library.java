@@ -80,7 +80,7 @@ book.setState(StateBook.BORROWED);
 public boolean returnBook(String isbnLoand) {
         for (Loan loan : loans) {
             if (loan.getBook().getIsbn().equals(isbnLoand) && !loan.isReturned()) {
-                loan.regisetrReturn();
+                loan.registerReturn();
                 loan.getBook().setState(StateBook.AVAILABLE);
                 return true;
             }

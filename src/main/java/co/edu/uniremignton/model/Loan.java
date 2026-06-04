@@ -41,7 +41,7 @@ public class Loan {
     // ⏺METODOS DE COMPORTAMIENTO
 
     // CAMBIA DEVUELTO A TRUE
-    public void regisetrReturn(){
+    public void registerReturn(){
         this.returned = true;
     }
 
