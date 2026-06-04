@@ -7,20 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// CREAMOS LOS ARRAYS PARA LIBROS Y OTRO PARA PRESTAMOS
 public class Library {
     private List<Book> books;
     private List<Loan> loans;
 
 
-    // CONSTRUCTOR
-    public Library() {
+public Library() {
         this.books = new ArrayList<>();
         this.loans = new ArrayList<>();
     }
 
-    //AgregarLibro
-    public boolean addBook(Book book) {
+public boolean addBook(Book book) {
         if (findBookByIsbn(book.getIsbn()).isPresent()) {
             return false; // Evita duplicados
         }
@@ -28,18 +25,15 @@ public class Library {
         return true;
     }
 
-    // buscarPorIsbn
-    public Optional<Book> findBookByIsbn(String isbn) {
+public Optional<Book> findBookByIsbn(String isbn) {
         return books.stream()
                 .filter(book -> book.getIsbn().equals(isbn))
                 .findFirst();
     }
 
-    // buscarPorTitulo
-    public List<Book> findBooksByTitle(String title) {
+public List<Book> findBooksByTitle(String title) {
         List<Book> result = new ArrayList<>();
         for (Book book : books) {
-            // .toLowerCase() asegura que si buscas "quijote" encuentre "El Quijote"
             if (book.getTitle().toLowerCase().contains(title.toLowerCase())) {
                 result.add(book);
             }
@@ -47,11 +41,9 @@ public class Library {
         return result;
     }
 
-    //getCatalogo
-    public List<Book> findBooksByAuthor(String author) {
+public List<Book> findBooksByAuthor(String author) {
         List<Book> result = new ArrayList<>();
         for (Book book : books) {
-            // Es igual al de título, solo que aquí usamos .getAuthor()
             if (book.getAuthor().toLowerCase().contains(author.toLowerCase())) {
                 result.add(book);
             }
@@ -59,8 +51,7 @@ public class Library {
         return result;
     }
 
-    // getLibrosDisponibles
-    public List<Book> getAvailableBooks() {
+public List<Book> getAvailableBooks() {
         List<Book> result = new ArrayList<>();
         for (Book book : books) {
             if (book.isAvailable()) {
@@ -71,8 +62,7 @@ public class Library {
     }
 
 
-    // prestarLibro(isbn, nombre)
-    public boolean borrowBook(String isbn, String borrowerName) {
+public boolean borrowBook(String isbn, String borrowerName) {
         Optional<Book> optionalBook = findBookByIsbn(isbn);
         if (optionalBook.isEmpty()) {
             return false;
@@ -81,19 +71,16 @@ public class Library {
         if (!book.isAvailable()) {
             return false;
         }
-        // CAMBIAMOS EL ESTADO DEL LIBRO A PRESTADO
-        book.setState(StateBook.BORROWED);
+book.setState(StateBook.BORROWED);
         Loan loan = new Loan(isbn, book, borrowerName);
         loans.add(loan);
         return true;
     }
 
-    // devolverLibro(idPrestamo)
-    public boolean returnBook(String isbnLoand) {
+public boolean returnBook(String isbnLoand) {
         for (Loan loan : loans) {
-            // Ahora sí compara String con String. ¡El amarillo desaparece!
             if (loan.getBook().getIsbn().equals(isbnLoand) && !loan.isReturned()) {
-                loan.registerReturn();
+                loan.regisetrReturn();
                 loan.getBook().setState(StateBook.AVAILABLE);
                 return true;
             }
@@ -101,8 +88,7 @@ public class Library {
         return false;
     }
 
-    // getPrestamosActivos()
-    public List<Loan> getActiveLoans() {
+public List<Loan> getActiveLoans() {
         List<Loan> result = new ArrayList<>();
 
         for (Loan loan : loans) {
@@ -114,14 +100,11 @@ public class Library {
         return result;
     }
 
-// getTodosLosPrestamos
-
-    public List<Loan> getBook() {
+public List<Loan> getBook() {
         return loans;
     }
 
-
-    public List<Book> getBooks() {
+public List<Book> getBooks() {
         return books;
     }
 }
